@@ -18,6 +18,12 @@ LIGHT_KVANTUM="Layan"
 DARK_KVANTUM="LayanDark"
 CHANGE_KVANTUM_COMMAND="kvantummanager --set"
 
+# GTK theme settings
+LIGHT_GTK="Breeze"
+DARK_GTK="Breeze-Dark"
+CHANGE_GTK3_COMMAND="dbus-send --session --dest=org.kde.GtkConfig --type=method_call /GtkConfig org.kde.GtkConfig.setGtk3Theme"
+CHANGE_GTK2_COMMAND="dbus-send --session --dest=org.kde.GtkConfig --type=method_call /GtkConfig org.kde.GtkConfig.setGtk2Theme"
+
 # cursor theme settings
 LIGHT_CURSOR="Breeze_Light"
 DARK_CURSOR="breeze_cursors"
@@ -32,8 +38,10 @@ CHANGE_WALLPAPER_COMMAND="plasma-apply-wallpaperimage"
 set_theme_and_wallpaper() {
     $CHANGE_THEME_COMMAND "$1"
     $CHANGE_KVANTUM_COMMAND "$2"
-    $CHANGE_CURSOR_COMMAND "$3"
-    $CHANGE_WALLPAPER_COMMAND "$4"
+    $CHANGE_GTK3_COMMAND "'string:$3'"
+    $CHANGE_GTK2_COMMAND "'string:$3'"
+    $CHANGE_CURSOR_COMMAND "$4"
+    $CHANGE_WALLPAPER_COMMAND "$5"
     LAST_THEME="$1"
     restart_kde
 }
@@ -55,9 +63,9 @@ is_daylight() {
 # initializes the theme, cursor and wallpaper based on the current daylight status
 initialize_theme_and_wallpaper() {
     if is_daylight; then
-        set_theme_and_wallpaper "$LIGHT_THEME" "$LIGHT_KVANTUM" "$LIGHT_CURSOR" "$LIGHT_WALLPAPER"
+        set_theme_and_wallpaper "$LIGHT_THEME" "$LIGHT_KVANTUM" "$LIGHT_GTK" "$LIGHT_CURSOR" "$LIGHT_WALLPAPER"
     else
-        set_theme_and_wallpaper "$DARK_THEME" "$DARK_KVANTUM" "$DARK_CURSOR" "$DARK_WALLPAPER"
+        set_theme_and_wallpaper "$DARK_THEME" "$DARK_KVANTUM" "$DARK_GTK" "$DARK_CURSOR" "$DARK_WALLPAPER"
     fi
 }
 
@@ -69,9 +77,9 @@ monitor_daylight_changes() {
         grep --line-buffered "daylight" |
         while read -r line; do
             if is_daylight; then
-                [[ "$LAST_THEME" != "$LIGHT_THEME" ]] && set_theme_and_wallpaper "$LIGHT_THEME" "$LIGHT_KVANTUM" "$LIGHT_CURSOR" "$LIGHT_WALLPAPER"
+                [[ "$LAST_THEME" != "$LIGHT_THEME" ]] && set_theme_and_wallpaper "$LIGHT_THEME" "$LIGHT_KVANTUM" "$LIGHT_GTK" "$LIGHT_CURSOR" "$LIGHT_WALLPAPER"
             else
-                [[ "$LAST_THEME" != "$DARK_THEME" ]] && set_theme_and_wallpaper "$DARK_THEME" "$DARK_KVANTUM" "$DARK_CURSOR" "$DARK_WALLPAPER"
+                [[ "$LAST_THEME" != "$DARK_THEME" ]] && set_theme_and_wallpaper "$DARK_THEME" "$DARK_KVANTUM" "$DARK_GTK" "$DARK_CURSOR" "$DARK_WALLPAPER"
             fi
         done
 }
