@@ -1,21 +1,27 @@
 #!/bin/bash
 
 # Name: auto-knight
-# Description: This script automatically changes the global theme of
+# Description: This script automatically changes the global theme and wallpaper of
 # KDE Plasma based on the time of day. It utilizes KDE's built-in
 # Night Light feature to determine whether it is day or night.
 # The script is intended to be autostarted.
 # Author: Dmitriy Safiullin
-# Date: 2024.03.16
 
+# plasma-apply-lookandfeel --list # to list available themes
 # theme and command settings
-LIGHT_THEME="org.kde.breeze.desktop"
-DARK_THEME="org.kde.breezedark.desktop"
+LIGHT_THEME="com.github.vinceliuice.Layan-light"
+DARK_THEME="com.github.vinceliuice.Layan"
 CHANGE_THEME_COMMAND="plasma-apply-lookandfeel -a"
 
-# sets theme and updates state
-set_theme() {
+# wallpaper settings
+LIGHT_WALLPAPER="/home/wcs/.local/share/wallpapers/beach-path.jpg"  # Replace with your light wallpaper path
+DARK_WALLPAPER="/path/to/your/dark/wallpaper.jpg"    # Replace with your dark wallpaper path
+CHANGE_WALLPAPER_COMMAND="plasma-apply-wallpaperimage"
+
+# sets theme and wallpaper and updates state
+set_theme_and_wallpaper() {
     $CHANGE_THEME_COMMAND "$1"
+    $CHANGE_WALLPAPER_COMMAND "$2"
     LAST_THEME="$1"
 }
 
@@ -27,16 +33,16 @@ is_daylight() {
     [[ "$daylight_status" == "true" ]]
 }
 
-# initializes the theme based on the current daylight status
-initialize_theme() {
+# initializes the theme and wallpaper based on the current daylight status
+initialize_theme_and_wallpaper() {
     if is_daylight; then
-        set_theme "$LIGHT_THEME"
+        set_theme_and_wallpaper "$LIGHT_THEME" "$LIGHT_WALLPAPER"
     else
-        set_theme "$DARK_THEME"
+        set_theme_and_wallpaper "$DARK_THEME" "$DARK_WALLPAPER"
     fi
 }
 
-# monitors changes in daylight status and updates the theme accordingly
+# monitors changes in daylight status and updates the theme and wallpaper accordingly
 monitor_daylight_changes() {
     dbus-monitor --session \
         "type='signal',interface='org.freedesktop.DBus.Properties', \
@@ -44,12 +50,12 @@ monitor_daylight_changes() {
         grep --line-buffered "daylight" |
         while read -r line; do
             if is_daylight; then
-                [[ "$LAST_THEME" != "$LIGHT_THEME" ]] && set_theme "$LIGHT_THEME"
+                [[ "$LAST_THEME" != "$LIGHT_THEME" ]] && set_theme_and_wallpaper "$LIGHT_THEME" "$LIGHT_WALLPAPER"
             else
-                [[ "$LAST_THEME" != "$DARK_THEME" ]] && set_theme "$DARK_THEME"
+                [[ "$LAST_THEME" != "$DARK_THEME" ]] && set_theme_and_wallpaper "$DARK_THEME" "$DARK_WALLPAPER"
             fi
         done
 }
 
-initialize_theme
+initialize_theme_and_wallpaper
 monitor_daylight_changes
