@@ -42,7 +42,6 @@ set_theme_and_wallpaper() {
     $CHANGE_GTK2_COMMAND "'string:$3'"
     $CHANGE_CURSOR_COMMAND "$4"
     $CHANGE_WALLPAPER_COMMAND "$5"
-    LAST_THEME="$1"
     restart_kde
 }
 
@@ -76,10 +75,11 @@ monitor_daylight_changes() {
         member='PropertiesChanged', path='/org/kde/KWin/NightLight'" |
         grep --line-buffered "daylight" |
         while read -r line; do
+            current_theme=$(kreadconfig5 --key LookAndFeelPackage)
             if is_daylight; then
-                [[ "$LAST_THEME" != "$LIGHT_THEME" ]] && set_theme_and_wallpaper "$LIGHT_THEME" "$LIGHT_KVANTUM" "$LIGHT_GTK" "$LIGHT_CURSOR" "$LIGHT_WALLPAPER"
+                [[ "$current_theme" != "$LIGHT_THEME" ]] && set_theme_and_wallpaper "$LIGHT_THEME" "$LIGHT_KVANTUM" "$LIGHT_GTK" "$LIGHT_CURSOR" "$LIGHT_WALLPAPER"
             else
-                [[ "$LAST_THEME" != "$DARK_THEME" ]] && set_theme_and_wallpaper "$DARK_THEME" "$DARK_KVANTUM" "$DARK_GTK" "$DARK_CURSOR" "$DARK_WALLPAPER"
+                [[ "$current_theme" != "$DARK_THEME" ]] && set_theme_and_wallpaper "$DARK_THEME" "$DARK_KVANTUM" "$DARK_GTK" "$DARK_CURSOR" "$DARK_WALLPAPER"
             fi
         done
 }
