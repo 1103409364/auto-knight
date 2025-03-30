@@ -29,6 +29,13 @@ set_theme_and_wallpaper() {
     $CHANGE_CURSOR_COMMAND "$2"
     $CHANGE_WALLPAPER_COMMAND "$3"
     LAST_THEME="$1"
+    restart_kde
+}
+
+# restarts KDE
+restart_kde() {
+    # kquitapp5 plasmashell || killall plasmashell && kstart5 plasmashell
+    kquitapp6 plasmashell && kstart plasmashell
 }
 
 # retrieves current daylight status
