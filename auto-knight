@@ -13,15 +13,21 @@ LIGHT_THEME="com.github.vinceliuice.Layan-light"
 DARK_THEME="com.github.vinceliuice.Layan"
 CHANGE_THEME_COMMAND="plasma-apply-lookandfeel -a"
 
+# cursor theme settings
+LIGHT_CURSOR="Breeze_Light"
+DARK_CURSOR="breeze_cursors"
+CHANGE_CURSOR_COMMAND="plasma-apply-cursortheme"
+
 # wallpaper settings
 LIGHT_WALLPAPER="/home/wcs/.local/share/wallpapers/Windots/walls/beach-path.jpg"  # Replace with your light wallpaper path
 DARK_WALLPAPER="/home/wcs/.local/share/wallpapers/Windots/walls/stall.jpg"    # Replace with your dark wallpaper path
 CHANGE_WALLPAPER_COMMAND="plasma-apply-wallpaperimage"
 
-# sets theme and wallpaper and updates state
+# sets theme, cursor and wallpaper and updates state
 set_theme_and_wallpaper() {
     $CHANGE_THEME_COMMAND "$1"
-    $CHANGE_WALLPAPER_COMMAND "$2"
+    $CHANGE_CURSOR_COMMAND "$2"
+    $CHANGE_WALLPAPER_COMMAND "$3"
     LAST_THEME="$1"
 }
 
@@ -33,16 +39,16 @@ is_daylight() {
     [[ "$daylight_status" == "true" ]]
 }
 
-# initializes the theme and wallpaper based on the current daylight status
+# initializes the theme, cursor and wallpaper based on the current daylight status
 initialize_theme_and_wallpaper() {
     if is_daylight; then
-        set_theme_and_wallpaper "$LIGHT_THEME" "$LIGHT_WALLPAPER"
+        set_theme_and_wallpaper "$LIGHT_THEME" "$LIGHT_CURSOR" "$LIGHT_WALLPAPER"
     else
-        set_theme_and_wallpaper "$DARK_THEME" "$DARK_WALLPAPER"
+        set_theme_and_wallpaper "$DARK_THEME" "$DARK_CURSOR" "$DARK_WALLPAPER"
     fi
 }
 
-# monitors changes in daylight status and updates the theme and wallpaper accordingly
+# monitors changes in daylight status and updates the theme, cursor and wallpaper accordingly
 monitor_daylight_changes() {
     dbus-monitor --session \
         "type='signal',interface='org.freedesktop.DBus.Properties', \
@@ -50,9 +56,9 @@ monitor_daylight_changes() {
         grep --line-buffered "daylight" |
         while read -r line; do
             if is_daylight; then
-                [[ "$LAST_THEME" != "$LIGHT_THEME" ]] && set_theme_and_wallpaper "$LIGHT_THEME" "$LIGHT_WALLPAPER"
+                [[ "$LAST_THEME" != "$LIGHT_THEME" ]] && set_theme_and_wallpaper "$LIGHT_THEME" "$LIGHT_CURSOR" "$LIGHT_WALLPAPER"
             else
-                [[ "$LAST_THEME" != "$DARK_THEME" ]] && set_theme_and_wallpaper "$DARK_THEME" "$DARK_WALLPAPER"
+                [[ "$LAST_THEME" != "$DARK_THEME" ]] && set_theme_and_wallpaper "$DARK_THEME" "$DARK_CURSOR" "$DARK_WALLPAPER"
             fi
         done
 }
