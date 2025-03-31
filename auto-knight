@@ -30,8 +30,8 @@ DARK_CURSOR="breeze_cursors"
 CHANGE_CURSOR_COMMAND="plasma-apply-cursortheme"
 
 # wallpaper settings
-LIGHT_WALLPAPER="/home/wcs/.local/share/wallpapers/Windots/walls/beach-path.jpg"  # Replace with your light wallpaper path
-DARK_WALLPAPER="/home/wcs/.local/share/wallpapers/Windots/walls/stall.jpg"    # Replace with your dark wallpaper path
+LIGHT_WALLPAPER="/home/$USER/.local/share/wallpapers/Windots/walls/beach-path.jpg"  # Replace with your light wallpaper path
+DARK_WALLPAPER="/home/$USER/.local/share/wallpapers/Windots/walls/stall.jpg"    # Replace with your dark wallpaper path
 CHANGE_WALLPAPER_COMMAND="plasma-apply-wallpaperimage"
 
 # sets theme, cursor and wallpaper and updates state
