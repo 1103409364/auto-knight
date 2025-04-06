@@ -42,14 +42,14 @@ set_theme() {
     $CHANGE_GTK2_COMMAND "'string:$3'"
     $CHANGE_CURSOR_COMMAND "$4"
     $CHANGE_WALLPAPER_COMMAND "$5"
-    restart_kde
+    # restart_kde
 }
 
 # restarts KDE
-restart_kde() {
-    # kquitapp5 plasmashell || killall plasmashell && kstart5 plasmashell
-    kquitapp6 plasmashell && kstart plasmashell
-}
+# restart_kde() {
+#     # kquitapp5 plasmashell || killall plasmashell && kstart5 plasmashell
+#     kquitapp6 plasmashell && kstart plasmashell
+# }
 
 # retrieves current daylight status if it is true then it is day, otherwise it is night
 is_daylight() {
