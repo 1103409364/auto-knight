@@ -16,7 +16,7 @@ CHANGE_THEME_COMMAND="plasma-apply-lookandfeel -a"
 # Konsole profile settings
 LIGHT_KONSOLE="light.profile"
 DARK_KONSOLE="dark.profile"
-CHANGE_KONSOLE_COMMAND="kwriteconfig6 --file ~/.config/konsolerc --group 'Desktop Entry' --key DefaultProfile"
+CHANGE_KONSOLE_COMMAND=("kwriteconfig6" "--file" "$HOME/.config/konsolerc" "--group" "Desktop Entry" "--key" "DefaultProfile")
 
 # Kvantum theme settings
 LIGHT_KVANTUM="Layan"
@@ -35,8 +35,8 @@ DARK_CURSOR="breeze_cursors"
 CHANGE_CURSOR_COMMAND="plasma-apply-cursortheme"
 
 # wallpaper settings
-LIGHT_WALLPAPER="/home/$USER/.local/share/wallpapers/Windots/walls/beach-path.jpg"  # Replace with your light wallpaper path
-DARK_WALLPAPER="/home/$USER/.local/share/wallpapers/Windots/walls/stall.jpg"    # Replace with your dark wallpaper path
+LIGHT_WALLPAPER="$HOME/.local/share/wallpapers/Windots/walls/beach-path.jpg"  # Replace with your light wallpaper path
+DARK_WALLPAPER="$HOME/.local/share/wallpapers/Windots/walls/stall.jpg"    # Replace with your dark wallpaper path
 CHANGE_WALLPAPER_COMMAND="plasma-apply-wallpaperimage"
 
 # sets theme, cursor and wallpaper and updates state
@@ -47,7 +47,7 @@ set_theme() {
     $CHANGE_GTK2_COMMAND "'string:$3'"
     $CHANGE_CURSOR_COMMAND "$4"
     $CHANGE_WALLPAPER_COMMAND "$5"
-    $CHANGE_KONSOLE_COMMAND "$6"
+    "${CHANGE_KONSOLE_COMMAND[@]}" "$6"
     # restart_kde
 }
 
