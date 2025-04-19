@@ -16,7 +16,7 @@ CHANGE_THEME_COMMAND="plasma-apply-lookandfeel -a"
 # Konsole profile settings
 LIGHT_KONSOLE="light.profile"
 DARK_KONSOLE="dark.profile"
-CHANGE_KONSOLE_COMMAND=("kwriteconfig6" "--file" "$HOME/.config/konsolerc" "--group" "Desktop Entry" "--key" "DefaultProfile")
+CHANGE_KONSOLE_COMMAND=("kwriteconfig6" "--file" "$HOME/.config/konsolerc" "--group" "Desktop Entry" "--key" "DefaultProfile") # Quotes/backslashes will be treated literally. use array to pass multiple arguments
 
 # Kvantum theme settings
 LIGHT_KVANTUM="Layan"
@@ -47,7 +47,7 @@ set_theme() {
     $CHANGE_GTK2_COMMAND "'string:$3'"
     $CHANGE_CURSOR_COMMAND "$4"
     $CHANGE_WALLPAPER_COMMAND "$5"
-    "${CHANGE_KONSOLE_COMMAND[@]}" "$6"
+    "${CHANGE_KONSOLE_COMMAND[@]}" "$6" # @ is used to expand the array
     # restart_kde
 }
 
