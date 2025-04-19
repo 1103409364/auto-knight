@@ -13,6 +13,11 @@ LIGHT_THEME="com.github.vinceliuice.Layan-light"
 DARK_THEME="com.github.vinceliuice.Layan"
 CHANGE_THEME_COMMAND="plasma-apply-lookandfeel -a"
 
+# Konsole profile settings
+LIGHT_KONSOLE="light.profile"
+DARK_KONSOLE="dark.profile"
+CHANGE_KONSOLE_COMMAND="kwriteconfig6 --file ~/.config/konsolerc --group 'Desktop Entry' --key DefaultProfile"
+
 # Kvantum theme settings
 LIGHT_KVANTUM="Layan"
 DARK_KVANTUM="LayanDark"
@@ -42,6 +47,7 @@ set_theme() {
     $CHANGE_GTK2_COMMAND "'string:$3'"
     $CHANGE_CURSOR_COMMAND "$4"
     $CHANGE_WALLPAPER_COMMAND "$5"
+    $CHANGE_KONSOLE_COMMAND "$6"
     # restart_kde
 }
 
@@ -72,9 +78,9 @@ should_update_theme() {
 # updates theme and wallpaper based on daylight status
 update_theme() {
     if is_daylight; then
-        set_theme "$LIGHT_THEME" "$LIGHT_KVANTUM" "$LIGHT_GTK" "$LIGHT_CURSOR" "$LIGHT_WALLPAPER"
+        set_theme "$LIGHT_THEME" "$LIGHT_KVANTUM" "$LIGHT_GTK" "$LIGHT_CURSOR" "$LIGHT_WALLPAPER" "$LIGHT_KONSOLE"
     else
-        set_theme "$DARK_THEME" "$DARK_KVANTUM" "$DARK_GTK" "$DARK_CURSOR" "$DARK_WALLPAPER"
+        set_theme "$DARK_THEME" "$DARK_KVANTUM" "$DARK_GTK" "$DARK_CURSOR" "$DARK_WALLPAPER" "$DARK_KONSOLE"
     fi
 }
 
