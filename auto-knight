@@ -7,6 +7,17 @@
 # The script is intended to be autostarted.
 # Author: Dmitriy Safiullin
 
+# check if script is already running
+check_running() {
+    if pidof -o %PPID -x "${0##*/}" >/dev/null; then
+        echo "Error: ${0##*/} is already running"
+        exit 1
+    fi
+}
+
+# Run the check before proceeding
+check_running
+
 # plasma-apply-lookandfeel --list # to list available themes
 # theme and command settings
 LIGHT_THEME="com.github.vinceliuice.Layan-light"
