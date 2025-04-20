@@ -25,7 +25,7 @@ CHANGE_KVANTUM_COMMAND="kvantummanager --set"
 
 # GTK theme settings
 LIGHT_GTK="Breeze"
-DARK_GTK="Breeze-Dark"
+DARK_GTK="Breeze"
 CHANGE_GTK3_COMMAND="dbus-send --session --dest=org.kde.GtkConfig --type=method_call /GtkConfig org.kde.GtkConfig.setGtk3Theme"
 CHANGE_GTK2_COMMAND="dbus-send --session --dest=org.kde.GtkConfig --type=method_call /GtkConfig org.kde.GtkConfig.setGtk2Theme"
 
@@ -95,7 +95,7 @@ monitor_daylight_changes() {
         "type='signal',interface='org.freedesktop.DBus.Properties', \
         member='PropertiesChanged', path='/org/kde/KWin/NightLight'" |
         grep --line-buffered "daylight" |
-        while read -r line; do
+        while read -r; do
             should_update_theme && update_theme
         done
 }
