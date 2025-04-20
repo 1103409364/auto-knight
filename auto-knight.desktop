@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Auto Knight
+Comment=KDE Automatic Theme Switching
+Exec=~/Workspace/project-m/auto-knight/auto-knight &
+Terminal=false
+Type=Application
+Categories=Utility;
+Icon=preferences-desktop-theme
+X-GNOME-Autostart-enabled=true
