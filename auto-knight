@@ -78,7 +78,7 @@ is_daylight() {
 
 # checks if theme needs to be updated based on daylight status
 should_update_theme() {
-    current_theme=$(kreadconfig5 --key LookAndFeelPackage)
+    current_theme=$(kreadconfig6 --key LookAndFeelPackage)
     if is_daylight; then
         [[ "$current_theme" != "$LIGHT_THEME" ]]
     else
