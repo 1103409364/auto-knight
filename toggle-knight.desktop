@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Toggle Knight
+Comment=KDE Theme Switcher
+Exec=~/Workspace/project-m/auto-knight/toggle-knight &
+Terminal=false
+Type=Application
+Categories=Utility;
+Icon=preferences-desktop-theme
+X-GNOME-Autostart-enabled=true

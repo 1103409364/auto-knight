@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# check if script is already running
+check_running() {
+    if pidof -o %PPID -x "${0##*/}" >/dev/null; then
+        echo "Error: ${0##*/} is already running"
+        exit 1
+    fi
+}
+
+# Run the check before proceeding
+check_running
+
+# plasma-apply-lookandfeel --list # to list available themes
+# theme and command settings
+LIGHT_THEME="com.github.vinceliuice.Layan-light"
+DARK_THEME="com.github.vinceliuice.Layan"
+CHANGE_THEME_COMMAND="plasma-apply-lookandfeel -a"
+
+# Konsole profile settings
+LIGHT_KONSOLE="light.profile"
+DARK_KONSOLE="dark.profile"
+CHANGE_KONSOLE_COMMAND=("kwriteconfig6" "--file" "$HOME/.config/konsolerc" "--group" "Desktop Entry" "--key" "DefaultProfile") # Quotes/backslashes will be treated literally. use array to pass multiple arguments
+
+# Kvantum theme settings
+LIGHT_KVANTUM="Layan"
+DARK_KVANTUM="LayanDark"
+CHANGE_KVANTUM_COMMAND="kvantummanager --set"
+
+# GTK theme settings
+LIGHT_GTK="Breeze"
+DARK_GTK="Breeze"
+CHANGE_GTK3_COMMAND="dbus-send --session --dest=org.kde.GtkConfig --type=method_call /GtkConfig org.kde.GtkConfig.setGtk3Theme"
+CHANGE_GTK2_COMMAND="dbus-send --session --dest=org.kde.GtkConfig --type=method_call /GtkConfig org.kde.GtkConfig.setGtk2Theme"
+
+# cursor theme settings
+LIGHT_CURSOR="Breeze_Light"
+DARK_CURSOR="breeze_cursors"
+CHANGE_CURSOR_COMMAND="plasma-apply-cursortheme"
+
+# wallpaper settings
+LIGHT_WALLPAPER="$HOME/.local/share/wallpapers/Windots/walls/beach-path.jpg"  # Replace with your light wallpaper path
+DARK_WALLPAPER="$HOME/.local/share/wallpapers/Windots/walls/stall.jpg"    # Replace with your dark wallpaper path
+CHANGE_WALLPAPER_COMMAND="plasma-apply-wallpaperimage"
+
+# sets theme, cursor and wallpaper and updates state
+set_theme() {
+    $CHANGE_THEME_COMMAND "$1"
+    # $CHANGE_KVANTUM_COMMAND "$2"
+    $CHANGE_GTK3_COMMAND "'string:$3'"
+    $CHANGE_GTK2_COMMAND "'string:$3'"
+    $CHANGE_CURSOR_COMMAND "$4"
+    $CHANGE_WALLPAPER_COMMAND "$5"
+    "${CHANGE_KONSOLE_COMMAND[@]}" "$6" # @ is used to expand the array
+    # restart_kde
+}
+
+# restarts KDE
+restart_kde() {
+    kquitapp6 plasmashell || killall plasmashell
+    sleep 1
+    kstart6 plasmashell
+}
+
+# check if it is dark theme
+is_dark_theme() {
+    current_theme=$(kreadconfig6 --key LookAndFeelPackage)
+    if [[ "$current_theme" == "$DARK_THEME" ]]; then
+        return 0 # true 命令成功执行时返回 0，返回其他值表示失败
+    else
+        return # false
+    fi
+}
+
+# updates theme and wallpaper based on daylight status
+update_theme() {
+    if is_dark_theme; then
+        set_theme "$LIGHT_THEME" "$LIGHT_KVANTUM" "$LIGHT_GTK" "$LIGHT_CURSOR" "$LIGHT_WALLPAPER" "$LIGHT_KONSOLE"
+    else
+        set_theme "$DARK_THEME" "$DARK_KVANTUM" "$DARK_GTK" "$DARK_CURSOR" "$DARK_WALLPAPER" "$DARK_KONSOLE"
+    fi
+}
+
+update_theme
