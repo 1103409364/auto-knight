@@ -14,7 +14,7 @@ CHANGE_KONSOLE_COMMAND=("kwriteconfig6" "--file" "$HOME/.config/konsolerc" "--gr
 # Kvantum theme settings
 LIGHT_KVANTUM="Layan"
 DARK_KVANTUM="LayanDark"
-CHANGE_KVANTUM_COMMAND="kvantummanager --set"
+# CHANGE_KVANTUM_COMMAND="kvantummanager --set"
 
 # GTK theme settings
 LIGHT_GTK="Breeze"
