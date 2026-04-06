@@ -14,7 +14,7 @@ CHANGE_KONSOLE_COMMAND=("kwriteconfig6" "--file" "$HOME/.config/konsolerc" "--gr
 # Kvantum theme settings
 LIGHT_KVANTUM="Layan"
 DARK_KVANTUM="LayanDark"
-CHANGE_KVANTUM_COMMAND="kvantummanager --set"
+# CHANGE_KVANTUM_COMMAND="kvantummanager --set"
 
 # GTK theme settings
 LIGHT_GTK="Breeze"
@@ -40,7 +40,7 @@ CHANGE_BRIGHTNESS_COMMAND=("qdbus" "org.kde.Solid.PowerManagement" "/org/kde/Sol
 # sets theme, cursor and wallpaper and updates state
 set_theme() {
     $CHANGE_THEME_COMMAND "$1"
-    $CHANGE_KVANTUM_COMMAND "$2"
+    # $CHANGE_KVANTUM_COMMAND "$2"
     $CHANGE_GTK3_COMMAND "'string:$3'"
     $CHANGE_GTK2_COMMAND "'string:$3'"
     $CHANGE_CURSOR_COMMAND "$4"

@@ -40,6 +40,7 @@ update_theme() {
 
 # initializes the theme based on the current daylight status
 initialize_theme() {
+    sleep 1 # wait for the system to initialize
     should_update_theme && update_theme
 }
 
@@ -50,7 +51,7 @@ monitor_daylight_changes() {
         member='PropertiesChanged', path='/org/kde/KWin/NightLight'" |
         grep --line-buffered "daylight" |
         while read -r; do
-            should_update_theme && update_theme
+            initialize_theme
         done
 }
 
