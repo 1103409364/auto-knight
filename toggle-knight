@@ -32,6 +32,11 @@ LIGHT_WALLPAPER="$HOME/.local/share/wallpapers/Windots/walls/beach-path.jpg"  # 
 DARK_WALLPAPER="$HOME/.local/share/wallpapers/Windots/walls/stall.jpg"    # Replace with your dark wallpaper path
 CHANGE_WALLPAPER_COMMAND="plasma-apply-wallpaperimage"
 
+# lockscreen wallpaper settings
+LIGHT_LOCKSCREEN_WALLPAPER="$HOME/.local/share/wallpapers/Windots/walls/beach-path.jpg"  # Replace with your light lockscreen wallpaper path
+DARK_LOCKSCREEN_WALLPAPER="$HOME/.local/share/wallpapers/Windots/walls/stall.jpg"    # Replace with your dark lockscreen wallpaper path
+CHANGE_LOCKSCREEN_WALLPAPER_COMMAND="kwriteconfig6 --file ~/.config/kscreenlockerrc --group General --key Wallpaper"
+
 # brightness settings (values are integers passed to setBrightness)
 LIGHT_BRIGHTNESS=4000
 DARK_BRIGHTNESS=2000
@@ -45,6 +50,7 @@ set_theme() {
     $CHANGE_GTK2_COMMAND "'string:$3'"
     $CHANGE_CURSOR_COMMAND "$4"
     $CHANGE_WALLPAPER_COMMAND "$5"
+    $CHANGE_LOCKSCREEN_WALLPAPER_COMMAND "file://$8"  # 8th parameter: lockscreen wallpaper
     "${CHANGE_KONSOLE_COMMAND[@]}" "$6" # @ is used to expand the array
     "${CHANGE_BRIGHTNESS_COMMAND[@]}" "$7"
     # restart_kde
@@ -70,9 +76,9 @@ is_dark_theme() {
 # updates theme and wallpaper based on daylight status
 update_theme() {
     if is_dark_theme; then
-        set_theme "$LIGHT_THEME" "$LIGHT_KVANTUM" "$LIGHT_GTK" "$LIGHT_CURSOR" "$LIGHT_WALLPAPER" "$LIGHT_KONSOLE" "$LIGHT_BRIGHTNESS"
+        set_theme "$LIGHT_THEME" "$LIGHT_KVANTUM" "$LIGHT_GTK" "$LIGHT_CURSOR" "$LIGHT_WALLPAPER" "$LIGHT_KONSOLE" "$LIGHT_BRIGHTNESS" "$LIGHT_LOCKSCREEN_WALLPAPER"
     else
-        set_theme "$DARK_THEME" "$DARK_KVANTUM" "$DARK_GTK" "$DARK_CURSOR" "$DARK_WALLPAPER" "$DARK_KONSOLE" "$DARK_BRIGHTNESS"
+        set_theme "$DARK_THEME" "$DARK_KVANTUM" "$DARK_GTK" "$DARK_CURSOR" "$DARK_WALLPAPER" "$DARK_KONSOLE" "$DARK_BRIGHTNESS" "$DARK_LOCKSCREEN_WALLPAPER"
     fi
 }
 
