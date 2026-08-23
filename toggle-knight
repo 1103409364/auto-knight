@@ -48,8 +48,8 @@ CHANGE_BRIGHTNESS_COMMAND=("qdbus" "org.kde.Solid.PowerManagement" "/org/kde/Sol
 set_theme() {
     $CHANGE_THEME_COMMAND "$1"
     # $CHANGE_KVANTUM_COMMAND "$2"
-    $CHANGE_GTK3_COMMAND "'string:$3'"
-    $CHANGE_GTK2_COMMAND "'string:$3'"
+    $CHANGE_GTK3_COMMAND "string:$3"
+    $CHANGE_GTK2_COMMAND "string:$3"
     $CHANGE_CURSOR_COMMAND "$4"
     # $CHANGE_WALLPAPER_COMMAND "$5"
     # $CHANGE_LOCKSCREEN_WALLPAPER_COMMAND "file://$8"  # 8th parameter: lockscreen wallpaper
