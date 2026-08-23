@@ -11,16 +11,18 @@ It is intended to be lightweight.
   * the Plasma global theme (`plasma-apply-lookandfeel`)
   * the Kvantum widget theme (`kvantummanager --set`)
   * the mouse cursor theme (`plasma-apply-cursortheme`)
-  * the default Konsole profile (`kwriteconfig6`, affects newly opened windows)
+  * the default Konsole profile (`kwriteconfig6`) and all sessions of running Konsole windows (via D-Bus, see the note below)
   * the screen brightness (`qdbus`)
 
   Note: the GTK theme is applied automatically as part of the global theme package, so it is not overridden here. Wallpaper and lockscreen settings are prepared but disabled by default.
+
+  Live-switching running Konsole sessions requires "Enable the security sensitive parts of the DBus API" in Konsole's settings (`konsolerc`: `[KonsoleWindow]` `EnableSecuritySensitiveDBusAPI=true`). Without it only newly opened windows follow the switch.
 
   It can also be run standalone to manually toggle between light and dark modes.
 
 ## Dependencies
 
-* qdbus: A tool for sending and reading DBus messages and values. This is used to get the current daylight status from KDE's Night Color feature and to set the screen brightness.
+* qdbus: A tool for sending and reading DBus messages and values. This is used to get the current daylight status from KDE's Night Color feature, to set the screen brightness and to switch the profile of running Konsole sessions.
 * dbus-monitor: A tool for monitoring DBus messages. This is used to detect changes in the daylight status.
 * grep: A tool for filtering text. This is used to filter the output of dbus-monitor for messages about the target color temperature.
 * plasma-apply-lookandfeel and plasma-apply-cursortheme: KDE tools for applying the global theme and cursor theme.

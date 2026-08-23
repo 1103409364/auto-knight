@@ -53,6 +53,21 @@ run_step() {
     fi
 }
 
+# switches all sessions of running Konsole instances to the given profile (best effort)
+# requires "Enable the security sensitive parts of the DBus API" in Konsole settings
+# (konsolerc: [KonsoleWindow] EnableSecuritySensitiveDBusAPI=true)
+switch_running_konsoles() {
+    local profile_name="${1%.profile}" pid obj
+    for pid in $(pgrep -x konsole); do
+        while read -r obj; do
+            [[ "$obj" == /Sessions/* ]] || continue
+            if ! qdbus "org.kde.konsole-$pid" "$obj" org.kde.konsole.Session.setProfile "$profile_name"; then
+                echo "Error: failed to switch Konsole session $obj to profile '$profile_name'" >&2
+            fi
+        done < <(qdbus "org.kde.konsole-$pid" 2>/dev/null)
+    done
+}
+
 # applies all settings of the given mode ("LIGHT" or "DARK") via variable indirection
 set_theme() {
     local mode="$1" status=0
@@ -72,6 +87,7 @@ set_theme() {
     # run_step "${CHANGE_WALLPAPER_COMMAND[@]}" "$WALLPAPER" || status=1
     # run_step "${CHANGE_LOCKSCREEN_WALLPAPER_COMMAND[@]}" "file://$LOCKSCREEN_WALLPAPER" || status=1
     run_step "${CHANGE_KONSOLE_COMMAND[@]}" "$KONSOLE" || status=1
+    switch_running_konsoles "$KONSOLE"
     run_step "${CHANGE_BRIGHTNESS_COMMAND[@]}" "$BRIGHTNESS" || status=1
     # restart_kde
     return "$status"
