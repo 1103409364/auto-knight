@@ -4,7 +4,7 @@
 # theme and command settings
 LIGHT_THEME="com.github.vinceliuice.Layan-light"
 DARK_THEME="com.github.vinceliuice.Layan"
-CHANGE_THEME_COMMAND="plasma-apply-lookandfeel -a"
+CHANGE_THEME_COMMAND=("plasma-apply-lookandfeel" "-a")
 
 # Konsole profile settings
 LIGHT_KONSOLE="light.profile"
@@ -14,48 +14,67 @@ CHANGE_KONSOLE_COMMAND=("kwriteconfig6" "--file" "$HOME/.config/konsolerc" "--gr
 # Kvantum theme settings
 LIGHT_KVANTUM="Layan"
 DARK_KVANTUM="LayanDark"
-# CHANGE_KVANTUM_COMMAND="kvantummanager --set"
+# CHANGE_KVANTUM_COMMAND=("kvantummanager" "--set")
 
-# GTK theme settings
-LIGHT_GTK="Breeze"
-DARK_GTK="Breeze"
-CHANGE_GTK3_COMMAND="dbus-send --session --dest=org.kde.GtkConfig --type=method_call /GtkConfig org.kde.GtkConfig.setGtk3Theme"
-CHANGE_GTK2_COMMAND="dbus-send --session --dest=org.kde.GtkConfig --type=method_call /GtkConfig org.kde.GtkConfig.setGtk2Theme"
+# GTK theme settings # org.kde.GtkConfig only provides a single setGtkTheme method
+# NOTE: plasma-apply-lookandfeel already applies the GTK theme bundled with the look-and-feel package,
+#       so overriding it here is disabled by default in set_theme. Uncomment those lines to enable.
+LIGHT_GTK="Layan"
+DARK_GTK="Layan-dark" # not installed yet (only "Layan" exists); install it before enabling
+CHANGE_GTK_COMMAND=("qdbus" "org.kde.GtkConfig" "/GtkConfig" "org.kde.GtkConfig.setGtkTheme")
 
 # list available cursor themes # find /usr/share/icons ~/.local/share/icons ~/.icons -maxdepth 2 -type f -name "index.theme" | while read theme_file; do dirname "$theme_file" | xargs basename; done | sort -u
 LIGHT_CURSOR="BreezeX-Light"
 DARK_CURSOR="BreezeX-Dark"
-CHANGE_CURSOR_COMMAND="plasma-apply-cursortheme"
+CHANGE_CURSOR_COMMAND=("plasma-apply-cursortheme")
 
 # wallpaper settings
 LIGHT_WALLPAPER="$HOME/.local/share/wallpapers/Windots/walls/beach-path.jpg"  # Replace with your light wallpaper path
 DARK_WALLPAPER="$HOME/.local/share/wallpapers/Windots/walls/stall.jpg"    # Replace with your dark wallpaper path
 # use kde Dynamic Wallpapers
-# CHANGE_WALLPAPER_COMMAND="plasma-apply-wallpaperimage" 
+# CHANGE_WALLPAPER_COMMAND=("plasma-apply-wallpaperimage")
 
 # lockscreen wallpaper settings
 LIGHT_LOCKSCREEN_WALLPAPER="$HOME/.local/share/wallpapers/Windots/walls/beach-path.jpg"  # Replace with your light lockscreen wallpaper path
 DARK_LOCKSCREEN_WALLPAPER="$HOME/.local/share/wallpapers/Windots/walls/stall.jpg"    # Replace with your dark lockscreen wallpaper path
 # use kde Dynamic Wallpapers
-# CHANGE_LOCKSCREEN_WALLPAPER_COMMAND="kwriteconfig6 --file ~/.config/kscreenlockerrc --group General --key Wallpaper"
+# CHANGE_LOCKSCREEN_WALLPAPER_COMMAND=("kwriteconfig6" "--file" "$HOME/.config/kscreenlockerrc" "--group" "General" "--key" "Wallpaper")
 
 # brightness settings (values are integers passed to setBrightness)
 LIGHT_BRIGHTNESS=4000
 DARK_BRIGHTNESS=2000
 CHANGE_BRIGHTNESS_COMMAND=("qdbus" "org.kde.Solid.PowerManagement" "/org/kde/Solid/PowerManagement/Actions/BrightnessControl" "setBrightness")
 
-# sets theme, cursor and wallpaper and updates state
+# runs a command, reports failure to stderr but does not abort the remaining steps
+run_step() {
+    if ! "$@"; then
+        echo "Error: command failed: $*" >&2
+        return 1
+    fi
+}
+
+# applies all settings of the given mode ("LIGHT" or "DARK") via variable indirection
 set_theme() {
-    $CHANGE_THEME_COMMAND "$1"
-    # $CHANGE_KVANTUM_COMMAND "$2"
-    $CHANGE_GTK3_COMMAND "string:$3"
-    $CHANGE_GTK2_COMMAND "string:$3"
-    $CHANGE_CURSOR_COMMAND "$4"
-    # $CHANGE_WALLPAPER_COMMAND "$5"
-    # $CHANGE_LOCKSCREEN_WALLPAPER_COMMAND "file://$8"  # 8th parameter: lockscreen wallpaper
-    "${CHANGE_KONSOLE_COMMAND[@]}" "$6" # @ is used to expand the array
-    "${CHANGE_BRIGHTNESS_COMMAND[@]}" "$7"
+    local mode="$1" status=0
+    local -n THEME="$mode"_THEME
+    local -n KVANTUM="$mode"_KVANTUM
+    local -n GTK="$mode"_GTK
+    local -n CURSOR="$mode"_CURSOR
+    local -n WALLPAPER="$mode"_WALLPAPER
+    local -n LOCKSCREEN_WALLPAPER="$mode"_LOCKSCREEN_WALLPAPER
+    local -n KONSOLE="$mode"_KONSOLE
+    local -n BRIGHTNESS="$mode"_BRIGHTNESS
+
+    run_step "${CHANGE_THEME_COMMAND[@]}" "$THEME" || status=1
+    # run_step "${CHANGE_KVANTUM_COMMAND[@]}" "$KVANTUM" || status=1
+    # run_step "${CHANGE_GTK_COMMAND[@]}" "$GTK" || status=1 # disabled: the look-and-feel package already applies its bundled GTK theme
+    run_step "${CHANGE_CURSOR_COMMAND[@]}" "$CURSOR" || status=1
+    # run_step "${CHANGE_WALLPAPER_COMMAND[@]}" "$WALLPAPER" || status=1
+    # run_step "${CHANGE_LOCKSCREEN_WALLPAPER_COMMAND[@]}" "file://$LOCKSCREEN_WALLPAPER" || status=1
+    run_step "${CHANGE_KONSOLE_COMMAND[@]}" "$KONSOLE" || status=1
+    run_step "${CHANGE_BRIGHTNESS_COMMAND[@]}" "$BRIGHTNESS" || status=1
     # restart_kde
+    return "$status"
 }
 
 # restarts KDE
@@ -65,22 +84,17 @@ restart_kde() {
     kstart plasmashell
 }
 
-# check if it is dark theme
+# true (0) if the current look-and-feel theme is the dark one, false (1) otherwise
 is_dark_theme() {
-    current_theme=$(kreadconfig6 --key LookAndFeelPackage)
-    if [[ "$current_theme" == "$DARK_THEME" ]]; then
-        return 0 # true 命令成功执行时返回 0，返回其他值表示失败
-    else
-        return # false
-    fi
+    [[ "$(kreadconfig6 --key LookAndFeelPackage)" == "$DARK_THEME" ]]
 }
 
 # updates theme and wallpaper based on daylight status
 update_theme() {
     if is_dark_theme; then
-        set_theme "$LIGHT_THEME" "$LIGHT_KVANTUM" "$LIGHT_GTK" "$LIGHT_CURSOR" "$LIGHT_WALLPAPER" "$LIGHT_KONSOLE" "$LIGHT_BRIGHTNESS" "$LIGHT_LOCKSCREEN_WALLPAPER"
+        set_theme LIGHT
     else
-        set_theme "$DARK_THEME" "$DARK_KVANTUM" "$DARK_GTK" "$DARK_CURSOR" "$DARK_WALLPAPER" "$DARK_KONSOLE" "$DARK_BRIGHTNESS" "$DARK_LOCKSCREEN_WALLPAPER"
+        set_theme DARK
     fi
 }
 
