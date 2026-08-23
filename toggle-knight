@@ -11,10 +11,10 @@ LIGHT_KONSOLE="light.profile"
 DARK_KONSOLE="dark.profile"
 CHANGE_KONSOLE_COMMAND=("kwriteconfig6" "--file" "$HOME/.config/konsolerc" "--group" "Desktop Entry" "--key" "DefaultProfile") # Quotes/backslashes will be treated literally. use array to pass multiple arguments
 
-# Kvantum theme settings
+# Kvantum theme settings # both variants live in ~/.config/Kvantum/Layan/ as separate .kvconfig files
 LIGHT_KVANTUM="Layan"
 DARK_KVANTUM="LayanDark"
-# CHANGE_KVANTUM_COMMAND=("kvantummanager" "--set")
+CHANGE_KVANTUM_COMMAND=("kvantummanager" "--set")
 
 # GTK theme settings # org.kde.GtkConfig only provides a single setGtkTheme method
 # NOTE: plasma-apply-lookandfeel already applies the GTK theme bundled with the look-and-feel package,
@@ -66,7 +66,7 @@ set_theme() {
     local -n BRIGHTNESS="$mode"_BRIGHTNESS
 
     run_step "${CHANGE_THEME_COMMAND[@]}" "$THEME" || status=1
-    # run_step "${CHANGE_KVANTUM_COMMAND[@]}" "$KVANTUM" || status=1
+    run_step "${CHANGE_KVANTUM_COMMAND[@]}" "$KVANTUM" || status=1
     # run_step "${CHANGE_GTK_COMMAND[@]}" "$GTK" || status=1 # disabled: the look-and-feel package already applies its bundled GTK theme
     run_step "${CHANGE_CURSOR_COMMAND[@]}" "$CURSOR" || status=1
     # run_step "${CHANGE_WALLPAPER_COMMAND[@]}" "$WALLPAPER" || status=1
