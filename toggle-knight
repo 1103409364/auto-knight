@@ -80,12 +80,12 @@ set_theme() {
     local -n KONSOLE="$mode"_KONSOLE
     local -n BRIGHTNESS="$mode"_BRIGHTNESS
 
-    run_step "${CHANGE_THEME_COMMAND[@]}" "$THEME" || status=1
     run_step "${CHANGE_KVANTUM_COMMAND[@]}" "$KVANTUM" || status=1
     # run_step "${CHANGE_GTK_COMMAND[@]}" "$GTK" || status=1 # disabled: the look-and-feel package already applies its bundled GTK theme
-    run_step "${CHANGE_CURSOR_COMMAND[@]}" "$CURSOR" || status=1
     # run_step "${CHANGE_WALLPAPER_COMMAND[@]}" "$WALLPAPER" || status=1
     # run_step "${CHANGE_LOCKSCREEN_WALLPAPER_COMMAND[@]}" "file://$LOCKSCREEN_WALLPAPER" || status=1
+    run_step "${CHANGE_THEME_COMMAND[@]}" "$THEME" || status=1
+    run_step "${CHANGE_CURSOR_COMMAND[@]}" "$CURSOR" || status=1
     run_step "${CHANGE_KONSOLE_COMMAND[@]}" "$KONSOLE" || status=1
     switch_running_konsoles "$KONSOLE"
     run_step "${CHANGE_BRIGHTNESS_COMMAND[@]}" "$BRIGHTNESS" || status=1
